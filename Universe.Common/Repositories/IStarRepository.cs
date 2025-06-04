@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Universe.Common.Models;
+
+namespace Universe.Common.Repositories
+{
+    public interface IStarRepository : ICrudRepository<int, Star>
+    {
+        bool AddPlanet(int starId, Planet planet);
+        bool AddPlanets(int starId, IEnumerable<Planet> planets);
+        bool RemovePlanet(int starId, int planetId);
+        IEnumerable<Planet> GetPlanetsByStarId(int starId);
+        bool UpdateStar(Star star);
+        Star? GetStarByName(string name);
+    }
+}
