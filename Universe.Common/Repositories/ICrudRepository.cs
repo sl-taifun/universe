@@ -14,7 +14,7 @@ namespace Universe.Common.Repositories
         TModel Create(TModel model);
 
         // Read
-        TModel? getGetById(TId id);
+        TModel? GetById(TId id);
         IEnumerable<TModel> GetAll();
         // update
        bool Update(TId id,TModel model);

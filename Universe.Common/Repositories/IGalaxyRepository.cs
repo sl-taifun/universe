@@ -9,6 +9,6 @@ namespace Universe.Common.Repositories
 {
     public interface IGalaxyRepository : ICrudRepository<int, Galaxy>
     {
-        bool AddStar(int galaxyId, Star star);
+       
     }
 }
