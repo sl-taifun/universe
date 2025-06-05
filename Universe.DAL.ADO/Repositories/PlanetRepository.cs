@@ -12,7 +12,7 @@ namespace Universe.DAL.ADO.Repositories
 {
     public class PlanetRepository : RepositoryBase,IPlanetRepository
     {
-        private DbConnection _dbConnection;
+       
 
         public PlanetRepository(DbConnection dbConnection)
             : base(dbConnection)
@@ -47,7 +47,7 @@ namespace Universe.DAL.ADO.Repositories
                 Id = record.GetInt32(record.GetOrdinal("Id")),
                 Name = record.GetString(record.GetOrdinal("Name")),
                 Satelite = (int)record["Satelite"],
-                Gravity = record.GetDouble(record.GetOrdinal("Gravity")),
+                Gravity = Convert.ToDouble(record["Gravity"]),
                 Stars = null
             };
         }

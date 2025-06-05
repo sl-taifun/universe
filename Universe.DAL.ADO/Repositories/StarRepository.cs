@@ -17,19 +17,99 @@ namespace Universe.DAL.ADO.Repositories
         {
         }
 
-        public bool AddPlanet(int starId, Planet planet)
+        public bool AddPlanet(int starId, int planetId)
         {
-            throw new NotImplementedException();
+            string cmd = "INSERT INTO [Rel__Star_Planet]([StarId],[PlanetId]) VALUES (@StarId, @PlanetId)";
+            int rowsAffected = _dbConnection.Execute(cmd, new 
+            { 
+                StarId = starId, 
+                PlanetId = planetId 
+            });
+
+            return rowsAffected == 1;
         }
 
-        public bool AddPlanets(int starId, IEnumerable<Planet> planets)
+        public bool AddPlanets2(int starId, IEnumerable<int> planetIds)
         {
-            throw new NotImplementedException();
+            const string sql = "INSERT INTO Rel__Star_Planet (StarId, PlanetId) VALUES (@StarId, @PlanetId)";
+
+            var parameters = planetIds.Select(planetId => new
+            {
+                StarId = starId,
+                PlanetId = planetId
+            });
+
+            try
+            {
+                _dbConnection.Execute(sql, parameters);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding planets: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool AddPlanets(int starId, IEnumerable<int> planetIds)
+        {
+            var currentPlanetIds = planetIds.ToList();
+            var sqlInputQuery = new List<string>();
+            var parameters = new DynamicParameters();
+
+            for (int i = 0; i < currentPlanetIds.Count; i++)
+            {
+                sqlInputQuery.Add($"(@StarId, @PlanetId{i})");
+                parameters.Add($"PlanetId{i}", currentPlanetIds[i]);
+            }
+
+            parameters.Add("@StarId", starId);
+
+            string sql = $"INSERT INTO Rel__Star_Planet (StarId, PlanetId) VALUES {string.Join(", ", sqlInputQuery)}";
+
+            try
+            {
+                _dbConnection.Execute(sql, parameters);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding planets: {ex.Message}");
+                return false;
+            }
+        }
+        public bool AddPlanets4(int starId, IEnumerable<int> planetIds)
+        {
+           
+
+            List<int> currentPlanetId = planetIds.ToList();
+            List<string> sqlInputQuery = new List<string>();
+            Dictionary<string,int> sqlInputValue = new Dictionary<string, int>();
+
+            for(int i = 0; i < currentPlanetId.Count; i++)
+            {
+                string parameterName = $"@PlanetId{i}";
+                sqlInputQuery.Add($"({starId}, {parameterName})");
+                sqlInputValue.Add(parameterName, currentPlanetId[i]);
+            }
+
+            string sql = $"INSERT INTO StarPlanet (StarId, PlanetId) VALUES {string.Join(",",sqlInputQuery)}";
+
+            try
+            {
+                _dbConnection.Execute(sql);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding planets: {ex.Message}");
+                return false;
+            }
         }
 
         public Star Create(Star model)
         {
-            string cmd = "INSERT INTO [Star] ([Name], [IsDeath]) OUTPUT [inserted].* VALUES (@Name, @IsDeath);";
+            string cmd = "INSERT INTO [Star] ([Name], [IsDeath], [GalaxyId]) OUTPUT [inserted].* VALUES (@Name, @IsDeath, @GalaxyId);";
             return  _dbConnection.QuerySingle<Star>(cmd, model);
         }
 
@@ -63,24 +143,21 @@ namespace Universe.DAL.ADO.Repositories
             return rowsAffected ==1;
         }
 
-        public IEnumerable<Planet> GetPlanetsByStarId(int starId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Star? GetStarByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool RemovePlanet(int starId, int planetId)
         {
-            throw new NotImplementedException();
+            string sql = "DELETE FROM [Rel__Star_Planet] WHERE StarId = @StarId AND PlanetId = @PlanetId";
+            int rowsAffected = _dbConnection.Execute(sql, new { StarId = starId, PlanetId = planetId });
+
+            try
+            {
+                _dbConnection.Execute(sql, new { StarId = starId, PlanetId = planetId });
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
         }
 
-        public bool UpdateStar(Star star)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

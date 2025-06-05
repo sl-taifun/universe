@@ -25,7 +25,7 @@ namespace Universe.DAL.ADO.Repositories
         public Galaxy Create(Galaxy model)
         {
             using DbCommand cmd = _dbConnection.CreateCommand();
-            cmd.CommandText = "INSERT INTO Galaxies (Name, Description) OUTPUT [inserted].* VALUES (@Name, @Description);)";
+            cmd.CommandText = "INSERT INTO Galaxy (Name, Description) OUTPUT [inserted].* VALUES (@Name, @Description);";
             AddCommandParameters(cmd, "@Name", model.Name);
             AddCommandParameters(cmd, "@Description", model.Description);
             using DbDataReader reader = cmd.ExecuteReader();
@@ -54,7 +54,7 @@ namespace Universe.DAL.ADO.Repositories
             {
                 Id = record.GetInt32(record.GetOrdinal("Id")),
                 Name = record.GetString(record.GetOrdinal("Name")),
-                Description = record.GetString(record.GetOrdinal("Descriptino"))
+                Description = record.GetString(record.GetOrdinal("Description"))
 
             };
         }

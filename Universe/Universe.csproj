@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Universe.Common\Universe.Common.csproj" />
+    <ProjectReference Include="..\Universe.DAL.ADO\Universe.DAL.ADO.csproj" />
   </ItemGroup>
 
 </Project>
